@@ -23,6 +23,7 @@
           pkgs = import nixpkgs {
             inherit overlays system;
           };
+	  # the next two deriviations are just tests to see whether I could fetch the parser into this repo
           markdown-grammar-source = pkgs.fetchFromGitHub {
             owner = "mdeiml";
             repo = "tree-sitter-markdown";
@@ -34,6 +35,7 @@
             version = "0.0.1";
             src = "${markdown-grammar-source}/tree-sitter-markdown";
           });
+	  # this is what I'm actually using to build the current parser
           parser = pkgs.stdenv.mkDerivation {
 	    name = "parser";
             src = ./tree-sitter-markdown;
