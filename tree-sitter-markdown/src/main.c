@@ -16,6 +16,16 @@ char *escape_double_quotes(const char *type) {
 	}
 }
 
+char *escape_back_slash(const char *type) {
+	char dq[] = "\\";
+	int result = strcmp(type, dq);
+	if (result == 0) {
+		return "\\\\";
+	} else {
+		return type;
+	}
+}
+
 // Function to print an S-expression with line and column information
 void print_sexp_with_position(TSNode node, const TSLanguage *lang, const char *source) {
     TSSymbol symbol = ts_node_symbol(node);
@@ -27,7 +37,8 @@ void print_sexp_with_position(TSNode node, const TSLanguage *lang, const char *s
     // Get the end position of the node
     TSPoint end_point = ts_node_end_point(node);
 
-    char *escaped = escape_double_quotes(type);
+    char *escaped1 = escape_double_quotes(type);
+    char *escaped = escape_back_slash(escaped1);
 
     // Print the S-expression with line and column information
     printf("(\"%s\" \"%d:%d-%d:%d\" ", escaped, start_point.row + 1, start_point.column + 1, end_point.row + 1, end_point.column + 1);
