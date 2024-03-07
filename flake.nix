@@ -39,7 +39,7 @@
           parser = pkgs.stdenv.mkDerivation {
 	    name = "parser";
             src = ./tree-sitter-markdown;
-	    buildInputs = [pkgs.gcc];
+            nativeBuildInputs = [pkgs.gcc];
             buildPhase = ''
 	      gcc -o parser src/*.c -I./src \
 	        -I${pkgs.tree-sitter}/include \
