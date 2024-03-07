@@ -39,9 +39,11 @@
           parser = pkgs.stdenv.mkDerivation {
 	    name = "parser";
             src = ./tree-sitter-markdown;
-            nativeBuildInputs = [pkgs.gcc];
+            nativeBuildInputs = [ pkgs.gcc
+                                  pkgs.findutils
+                                  pkgs.patchelf ];
             buildPhase = ''
-	      gcc -o parser src/*.c -I./src \
+	      ${pkgs.gcc}/bin/gcc -o parser src/*.c -I./src \
 	        -I${pkgs.tree-sitter}/include \
 	        ${pkgs.tree-sitter}/lib/libtree-sitter.${dylibExt};
 	    '';
@@ -49,6 +51,10 @@
 	      mkdir -p $out/bin;
 	      cp parser $out/bin/parser;
 	    '';
+
+            fixupPhase = ''
+              find $out -type f -exec patchelf --shrink-rpath '{}' \; -exec strip '{}' \; 2>/dev/null
+            '';
           };
         in
         rec
@@ -61,6 +67,9 @@
             name = "tree-sitter";
             packages = with pkgs; [
               tree-sitter
+              gcc
+              findutils
+              patchelf
             ];
             commands = [
             ];
